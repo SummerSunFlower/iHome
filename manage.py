@@ -1,11 +1,11 @@
 # _*_ coding:utf-8 _*_
-from flask_migrate import Migrate,MigrateCommand,Manager
-from iHome import app,db
+from flask_migrate import Migrate, MigrateCommand, Manager
+from iHome import create_app, db
 
+app = create_app("DevelopmentConig")
 manager = Manager(app)
-Migrate(app,db)
-manager.add_command("db",MigrateCommand)
-
+Migrate(app, db)
+manager.add_command("db", MigrateCommand)
 
 
 @app.route('/', methods=['GET', "POST"])
