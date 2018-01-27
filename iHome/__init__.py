@@ -17,4 +17,5 @@ def create_app(config_name):
     CSRFProtect(app)
     # 制定session保存的位置
     Session(app)
+
     return app
