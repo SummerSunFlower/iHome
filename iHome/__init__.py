@@ -1,11 +1,10 @@
- # _*_ coding:utf-8 _*_
+# _*_ coding:utf-8 _*_
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import redis
 from flask_wtf.csrf import CSRFProtect
 from flask_session import Session
 from config import Config
-
 
 app = Flask(__name__)
 
