@@ -1,8 +1,10 @@
 # -*- coding:utf-8 -*-
-
 from . import api
+from iHome import redisstorge
 
-print '34567890-'
-@api.route('/', methods=['GET', "POST"])
-def index():
-    return "index"
+#
+# @api.route('/', methods=['GET', "POST"])
+# def index():
+#     # session['name'] = 'hehe'
+#     redisstorge.set('name','haha')
+#     return "index"
