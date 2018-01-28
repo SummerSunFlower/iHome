@@ -1,6 +1,6 @@
 # _*_ coding:utf-8 _*_
 from flask_migrate import Migrate, MigrateCommand, Manager
-from iHome import create_app, db
+from iHome import create_app, db,models
 
 app = create_app("DevelopmentConig")
 manager = Manager(app)

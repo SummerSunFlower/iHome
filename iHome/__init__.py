@@ -7,7 +7,6 @@ from flask_session import Session
 from config import config
 from iHome.utils.common import RegexConverter
 
-
 redisstorge = None
 db = SQLAlchemy()
 
