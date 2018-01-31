@@ -1,16 +1,26 @@
- # _*_ coding:utf-8 _*_
-from flask import Blueprint
-from flask import current_app
+# -*- coding:utf-8 -*-
+# 专门为具体的html文件请求提供路由
+from flask import Blueprint, current_app, make_response
+from flask_wtf.csrf import generate_csrf
 
-html = Blueprint('html',__name__)
+html = Blueprint("html", __name__)
 
 
-@html.route('/<re(".*"):filename>')
-def get_html_file(filename):
-    # 如果没有传filename，默认是首页
-    print 'For Test'
-    if not filename:
-        filename='index.html'
-    if filename != 'favicon.ico':
-        filename = '/html'+filename
-    return current_app.send_static_file(filename) # 系统默认使用的通过文件名去查找模板并渲染
+# http://127.0.0.1:5000/index.html
+# http://127.0.0.1:5000/favicon.ico
+@html.route('/<re(".*"):file_name>')
+def get_html_file(file_name):
+    if not file_name:
+        file_name = "index.html"
+
+    # 判断是否是图标，如果不是图标，拼接html
+    if file_name != "favicon.ico":
+        file_name = "html/" + file_name
+    # send_static_file：通过指定的文件名找到指定的静态文件并封装成响应
+    response = make_response(current_app.send_static_file(file_name))
+    # 生成csrf_token的值
+    csrf_token = generate_csrf()
+    # 设置csrftoken的cookie
+    response.set_cookie("csrf_token", csrf_token)
+
+    return response
