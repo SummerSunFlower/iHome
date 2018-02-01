@@ -29,6 +29,26 @@ class User(BaseModel, db.Model):
     houses = db.relationship("House", backref="user")  # 用户发布的房屋
     orders = db.relationship("Order", backref="user")  # 用户下的订单
 
+    @property
+    def password(self):
+        raise AttributeError("不能读取")
+
+    @password.setter
+    def password(self, value):
+        self.password_hash = generate_password_hash(value)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def to_dict(self):
+        resp = {
+            "name": self.name,
+            "avatar_url": constants.QINIU_DOMIN_PREFIX + (self.avatar_url if self.avatar_url else ""),
+            "mobile": self.mobile,
+            "user_id": self.id
+        }
+        return resp
+
 
 class Area(BaseModel, db.Model):
     """城区"""
