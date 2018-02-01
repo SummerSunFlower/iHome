@@ -64,6 +64,9 @@ def register():
         current_app.logger.error(e)
         return jsonify(errno=RET.DBERR, errmsg="保存用户数据失败")
     # 6. 给出响应：{"errno": "0", "errmsg": "注册成功"}
+    session["user_id"] = user.id
+    session["name"] = user.name
+    session["mobile"] = user.mobile
     return jsonify(errno=RET.OK, errmsg="注册成功")
 
 
@@ -114,4 +117,25 @@ def login():
 
     # 6. 给出响应
     return jsonify(errno=RET.OK, errmsg="登录成功")
+
+
+
+@api.route("/session")
+def check_login():
+    """判断当前用户是否登录，如果登录，返回用户的id和用户的用户名"""
+
+    user_id = session.get("user_id")
+    name = session.get("name")
+    return jsonify(errno=RET.OK, errmsg="OK", data={"user_id": user_id, "name": name})
+
+
+@api.route('/session', methods=["DELETE"])
+def logout():
+    """执行退出操作"""
+
+    session.pop('name')
+    session.pop('user_id')
+    session.pop('mobile')
+
+    return jsonify(errno=RET.OK, errmsg="OK")
 
