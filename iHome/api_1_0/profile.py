@@ -149,3 +149,83 @@ def set_user_name():
     session["name"] = user.name
     # 5. 返回响应
     return jsonify(errno=RET.OK, errmsg="保存成功")
+
+
+
+
+@api.route('/user/auth', methods=["POST"])
+@login_required
+def set_user_auth():
+    """
+    设置用户实名认证信息
+    1. 获取参数，并判断参数是有值
+    2. 查询出当前用户的模型
+    3. 更新模型
+    4. 保存到数据库
+    5. 返回响应
+    :return:
+    """
+    pass
+
+    # 1. 获取参数，并判断参数是有值
+    data_dict = request.json
+    real_name = data_dict.get("real_name")
+    id_card = data_dict.get("id_card")
+
+    if not all([real_name, id_card]):
+        return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
+
+    # 2. 查询出当前用户的模型
+    user_id = g.user_id
+
+    try:
+        user = User.query.get(user_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="查询数据失败")
+
+    if not user:
+        return jsonify(errno=RET.NODATA, errmsg="用户不存在")
+
+    # 3. 更新模型
+    user.real_name = real_name
+    user.id_card = id_card
+
+    # 4. 保存到数据库
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        db.session.rollback()
+        return jsonify(errno=RET.DBERR, errmsg="数据保存失败")
+
+    # 5. 返回响应
+    return jsonify(errno=RET.OK, errmsg="保存成功")
+
+@api.route('/user/auth')
+@login_required
+def get_user_auth():
+    """
+    获取用户的实名认证信息
+    :return:
+    """
+    # 1. 查询出当前用户的模型
+    user_id = g.user_id
+
+    try:
+        user = User.query.get(user_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="查询数据失败")
+
+    if not user:
+        return jsonify(errno=RET.NODATA, errmsg="用户不存在")
+
+    # 2. 封装响应
+
+    resp = {
+        "real_name": user.real_name,
+        "id_card": user.id_card
+    }
+    return jsonify(errno=RET.OK, errmsg="OK", data=resp)

@@ -58,28 +58,48 @@ function goToSearchPage(th) {
 }
 
 $(document).ready(function(){
-    // TODO: 检查用户的登录状态
-    $(".top-bar>.register-login").show();
-    // TODO: 获取幻灯片要展示的房屋基本信息
+    // 检查用户的登录状态
+    $.get("/api/v1.0/session", function (resp) {
+        if (resp.data.user_id && resp.data.name) {
+            // 显示用户名标签
+            $(".top-bar>.user-info").show();
+            // 设置数据
+            $(".top-bar>.user-info>a").html(resp.data.name)
+        }else {
+            // 显示登录和注册
+            $(".top-bar>.register-login").show();
+        }
+    })
 
-    // TODO: 数据设置完毕后,需要设置幻灯片对象，开启幻灯片滚动
-    var mySwiper = new Swiper ('.swiper-container', {
-        loop: true,
-        autoplay: 2000,
-        autoplayDisableOnInteraction: false,
-        pagination: '.swiper-pagination',
-        paginationClickable: true
-    });
+    // 获取幻灯片要展示的房屋基本信息
+    $.get("/api/v1.0/houses/index", function (resp) {
+        var html = template("swiper-houses-tmpl", {"houses": resp.data})
+        $(".swiper-wrapper").html(html)
+        // 数据设置完毕后,需要设置幻灯片对象，开启幻灯片滚动
+        var mySwiper = new Swiper ('.swiper-container', {
+            loop: true,
+            autoplay: 2000,
+            autoplayDisableOnInteraction: false,
+            pagination: '.swiper-pagination',
+            paginationClickable: true
+        });
+    })
 
-    // TODO: 获取城区信息,获取完毕之后需要设置城区按钮点击之后相关操作
 
-    // TODO: 城区按钮点击之后相关操作
-    $(".area-list a").click(function(e){
-        $("#area-btn").html($(this).html());
-        $(".search-btn").attr("area-id", $(this).attr("area-id"));
-        $(".search-btn").attr("area-name", $(this).html());
-        $("#area-modal").modal("hide");
-    });
+    // 获取城区信息,获取完毕之后需要设置城区按钮点击之后相关操作
+    $.get("/api/v1.0/areas", function (resp) {
+        if (resp.errno == "0") {
+            $(".area-list").html(template("area-list-tmpl", {"areas": resp.data}))
+            // 城区按钮点击之后相关操作
+            $(".area-list a").click(function(e){
+                $("#area-btn").html($(this).html());
+                $(".search-btn").attr("area-id", $(this).attr("area-id"));
+                $(".search-btn").attr("area-name", $(this).html());
+                $("#area-modal").modal("hide");
+            });
+        }
+    })
+
 
     $('.modal').on('show.bs.modal', centerModals);      //当模态框出现的时候
     $(window).on('resize', centerModals);               //当窗口大小变化的时候

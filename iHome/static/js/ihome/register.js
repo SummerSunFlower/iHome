@@ -62,7 +62,7 @@ function sendSMSCode() {
 
     $.ajax({
         url: "/api/v1.0/sms_code",  // 请求地址
-        type: "POST",               // 请求方式
+        type: "post",               // 请求方式
         data: JSON.stringify(params),// 请求参数
         headers: {
             "X-CSRFToken": getCookie("csrf_token")
@@ -125,9 +125,7 @@ $(document).ready(function() {
 
     $(".form-register").submit(function (e) {
         // 阻止默认的提交操作
-        // altert(e)
         e.preventDefault()
-        // alert("阻止成功")
 
         // 取值
         var mobile = $("#mobile").val()
@@ -158,7 +156,6 @@ $(document).ready(function() {
             return;
         }
 
-
         var params = {
             "mobile": mobile,
             "phonecode": phonecode,
@@ -176,7 +173,6 @@ $(document).ready(function() {
             success: function (resp) {
                 if (resp.errno == "0") {
                     //注册成功，进入到主页去
-                    // alert('chenggong')
                     location.href = "/"
                 }else {
                     $("#password2-err span").html(resp.errmsg);

@@ -32,6 +32,11 @@ $(document).ready(function() {
             "password": password
         }
 
+        // console.log($(this).serializeArray()) // [{"mobile": "18811110000", "password": "123456"}]
+        // $(this).serializeArray().map(function (x) {
+        //     console.log(x)
+        // })
+
         // 发起请求
         $.ajax({
             url: "/api/v1.0/session",
